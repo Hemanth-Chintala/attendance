@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Attendance System</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container" id="app">
+        <!-- Login Section -->
+        <section id="login-section" class="section">
+            <div class="login-container">
+                <div class="logo">
+                    <i class="fas fa-university"></i>
+                    <h1>Student Attendance System</h1>
+                </div>
+                <div class="login-form">
+                    <h2>Professor Login</h2>
+                    <form id="login-form">
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" id="email" placeholder="Enter your email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="password">Password</label>
+                            <input type="password" id="password" placeholder="Enter your password" required>
+                        </div>
+                        <div class="form-group">
+                            <button type="submit" class="btn-primary">Login</button>
+                        </div>
+                        <div class="form-group">
+                            <a href="#" class="forgot-password">Forgot Password?</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <!-- Main Dashboard (Hidden until login) -->
+        <section id="dashboard-section" class="section hidden">
+            <header class="dashboard-header">
+                <div class="logo">
+                    <i class="fas fa-university"></i>
+                    <h1>Student Attendance System</h1>
+                </div>
+                <nav class="nav-menu">
+                    <ul>
+                        <li><a href="#" data-section="dashboard" class="active">Dashboard</a></li>
+                        <li><a href="#" data-section="face-registration">Face Registration</a></li>
+                        <li><a href="#" data-section="attendance-marking">Attendance Marking</a></li>
+                        <li><a href="#" data-section="attendance-management">Attendance Management</a></li>
+                        <li><a href="#" data-section="reports">Reports</a></li>
+                    </ul>
+                </nav>
+                <div class="user-info">
+                    <span id="user-name">Professor</span>
+                    <button id="logout-btn" class="btn-logout">Logout</button>
+                </div>
+            </header>
+
+            <main class="dashboard-content">
+                <!-- Dashboard Overview -->
+                <div id="dashboard-content" class="content-section">
+                    <h2>Dashboard Overview</h2>
+                    <div class="stats-container">
+                        <div class="stat-card">
+                            <div class="stat-icon"><i class="fas fa-users"></i></div>
+                            <div class="stat-info">
+                                <h3>Total Students</h3>
+                                <p id="total-students">--</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon"><i class="fas fa-clock"></i></div>
+                            <div class="stat-info">
+                                <h3>Today's Attendance</h3>
+                                <p id="today-attendance">--</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon"><i class="fas fa-book"></i></div>
+                            <div class="stat-info">
+                                <h3>Active Courses</h3>
+                                <p id="active-courses">--</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon"><i class="fas fa-chart-pie"></i></div>
+                            <div class="stat-info">
+                                <h3>Avg. Attendance</h3>
+                                <p id="avg-attendance">--</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <div class="chart">
+                            <h3>Weekly Attendance Report</h3>
+                            <div id="attendance-chart"></div>
+                        </div>
+                        <div class="recent-container">
+                            <h3>Recent Activity</h3>
+                            <ul id="recent-activity" class="activity-list">
+                                <!-- Populated via JavaScript -->
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Face Registration -->
+                <div id="face-registration-content" class="content-section hidden">
+                    <h2>Student Face Registration</h2>
+                    <div class="face-registration-container">
+                        <div class="student-info-form">
+                            <h3>Enter Student Information</h3>
+                            <form id="student-info-form">
+                                <div class="form-group">
+                                    <label for="student-id">Student ID</label>
+                                    <input type="text" id="student-id" placeholder="Enter student ID" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="student-name">Student Name</label>
+                                    <input type="text" id="student-name" placeholder="Enter student name" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="student-course">Course</label>
+                                    <select id="student-course" required>
+                                        <option value="">Select Course</option>
+                                        <!-- Populated via JavaScript -->
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <button type="submit" class="btn-primary">Register Student</button>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="face-capture">
+                            <h3>Capture Student Face</h3>
+                            <div class="capture-options">
+                                <button id="start-webcam" class="btn-secondary"><i class="fas fa-camera"></i> Start Webcam</button>
+                                <button id="upload-image" class="btn-secondary"><i class="fas fa-upload"></i> Upload Image</button>
+                                <input type="file" id="face-image-upload" accept="image/*" hidden>
+                            </div>
+                            <div class="webcam-container">
+                                <video id="webcam" autoplay playsinline></video>
+                                <canvas id="canvas" hidden></canvas>
+                                <div class="capture-controls hidden" id="capture-controls">
+                                    <button id="capture-photo" class="btn-primary"><i class="fas fa-camera"></i> Capture</button>
+                                    <button id="retake-photo" class="btn-secondary"><i class="fas fa-redo"></i> Retake</button>
+                                </div>
+                            </div>
+                            <div class="preview-container" id="preview-container" hidden>
+                                <h4>Preview</h4>
+                                <img id="face-preview" src="" alt="Face Preview">
+                                <div class="preview-controls">
+                                    <button id="confirm-face" class="btn-primary">Confirm & Save</button>
+                                    <button id="cancel-face" class="btn-secondary">Cancel</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="registered-students">
+                        <h3>Registered Students</h3>
+                        <div class="search-filter">
+                            <input type="text" id="search-students" placeholder="Search students...">
+                            <select id="filter-course">
+                                <option value="">All Courses</option>
+                                <!-- Populated via JavaScript -->
+                            </select>
+                        </div>
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Student ID</th>
+                                    <th>Name</th>
+                                    <th>Course</th>
+                                    <th>Registration Date</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="registered-students-table">
+                                <!-- Populated via JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Attendance Marking -->
+                <div id="attendance-marking-content" class="content-section hidden">
+                    <h2>Attendance Marking via Face Recognition</h2>
+                    <div class="attendance-marking-container">
+                        <div class="course-selection">
+                            <h3>Select Course & Session</h3>
+                            <div class="form-group">
+                                <label for="attendance-course">Course</label>
+                                <select id="attendance-course" required>
+                                    <option value="">Select Course</option>
+                                    <!-- Populated via JavaScript -->
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="attendance-date">Date</label>
+                                <input type="date" id="attendance-date" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="attendance-session">Session</label>
+                                <select id="attendance-session" required>
+                                    <option value="morning">Morning</option>
+                                    <option value="afternoon">Afternoon</option>
+                                    <option value="evening">Evening</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <button id="start-attendance" class="btn-primary">Start Attendance Session</button>
+                                <button id="end-attendance" class="btn-secondary" disabled>End Attendance Session</button>
+                            </div>
+                        </div>
+                        <div class="face-recognition">
+                            <h3>Face Recognition</h3>
+                            <div class="recognition-status">
+                                <p id="recognition-status">Select a course and start attendance session to begin.</p>
+                            </div>
+                            <div class="webcam-container">
+                                <video id="recognition-webcam" autoplay playsinline></video>
+                                <canvas id="recognition-canvas" hidden></canvas>
+                            </div>
+                            <div class="recognition-result">
+                                <div id="recognition-feedback">
+                                    <!-- Recognition status appears here -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="attendance-session-list">
+                        <h3>Current Session Attendance</h3>
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Student ID</th>
+                                    <th>Name</th>
+                                    <th>Time In</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="current-attendance-table">
+                                <!-- Populated via JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Attendance Management -->
+                <div id="attendance-management-content" class="content-section hidden">
+                    <h2>Attendance Management</h2>
+                    <div class="attendance-filters">
+                        <div class="form-group">
+                            <label for="filter-attendance-course">Course</label>
+                            <select id="filter-attendance-course">
+                                <option value="">All Courses</option>
+                                <!-- Populated via JavaScript -->
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="filter-attendance-date">Date</label>
+                            <input type="date" id="filter-attendance-date">
+                        </div>
+                        <div class="form-group">
+                            <label for="filter-attendance-student">Student</label>
+                            <input type="text" id="filter-attendance-student" placeholder="Search by ID or name">
+                        </div>
+                        <div class="form-group">
+                            <button id="apply-attendance-filters" class="btn-primary">Apply Filters</button>
+                            <button id="reset-attendance-filters" class="btn-secondary">Reset</button>
+                        </div>
+                    </div>
+                    <div class="attendance-records">
+                        <div class="table-controls">
+                            <button id="export-csv" class="btn-secondary"><i class="fas fa-file-csv"></i> Export CSV</button>
+                            <button id="export-pdf" class="btn-secondary"><i class="fas fa-file-pdf"></i> Export PDF</button>
+                        </div>
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Student ID</th>
+                                    <th>Name</th>
+                                    <th>Course</th>
+                                    <th>Date</th>
+                                    <th>Session</th>
+                                    <th>Time In</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="attendance-records-table">
+                                <!-- Populated via JavaScript -->
+                            </tbody>
+                        </table>
+                        <div class="pagination">
+                            <button id="prev-page" class="btn-page"><i class="fas fa-chevron-left"></i></button>
+                            <span id="page-info">Page 1 of 1</span>
+                            <button id="next-page" class="btn-page"><i class="fas fa-chevron-right"></i></button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Reports -->
+                <div id="reports-content" class="content-section hidden">
+                    <h2>Attendance Reports</h2>
+                    <div class="reports-container">
+                        <div class="report-filters">
+                            <h3>Generate Reports</h3>
+                            <div class="form-group">
+                                <label for="report-type">Report Type</label>
+                                <select id="report-type">
+                                    <option value="daily">Daily Report</option>
+                                    <option value="weekly">Weekly Report</option>
+                                    <option value="monthly">Monthly Report</option>
+                                    <option value="course">Course Report</option>
+                                    <option value="student">Student Report</option>
+                                </select>
+                            </div>
+                            <div class="form-group date-range">
+                                <label for="report-start-date">Start Date</label>
+                                <input type="date" id="report-start-date">
+                            </div>
+                            <div class="form-group date-range">
+                                <label for="report-end-date">End Date</label>
+                                <input type="date" id="report-end-date">
+                            </div>
+                            <div class="form-group">
+                                <label for="report-course">Course</label>
+                                <select id="report-course">
+                                    <option value="">All Courses</option>
+                                    <!-- Populated via JavaScript -->
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <button id="generate-report" class="btn-primary">Generate Report</button>
+                            </div>
+                        </div>
+                        <div class="report-preview">
+                            <h3>Report Preview</h3>
+                            <div class="report-actions">
+                                <button id="export-report-pdf" class="btn-secondary"><i class="fas fa-file-pdf"></i> Export PDF</button>
+                                <button id="export-report-excel" class="btn-secondary"><i class="fas fa-file-excel"></i> Export Excel</button>
+                                <button id="print-report" class="btn-secondary"><i class="fas fa-print"></i> Print</button>
+                            </div>
+                            <div id="report-content">
+                                <div class="report-placeholder">
+                                    <i class="fas fa-chart-line"></i>
+                                    <p>Select parameters and generate a report to preview it here.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </section>
+
+        <!-- Modal for editing attendance -->
+        <div id="edit-attendance-modal" class="modal hidden">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Edit Attendance Record</h3>
+                    <button class="close-modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <form id="edit-attendance-form">
+                        <div class="form-group">
+                            <label for="edit-student-id">Student ID</label>
+                            <input type="text" id="edit-student-id" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-student-name">Student Name</label>
+                            <input type="text" id="edit-student-name" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-attendance-date">Date</label>
+                            <input type="date" id="edit-attendance-date">
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-attendance-status">Status</label>
+                            <select id="edit-attendance-status">
+                                <option value="present">Present</option>
+                                <option value="absent">Absent</option>
+                                <option value="late">Late</option>
+                                <option value="excused">Excused</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-attendance-notes">Notes</label>
+                            <textarea id="edit-attendance-notes" rows="3"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button id="save-attendance-edit" class="btn-primary">Save Changes</button>
+                    <button class="btn-secondary close-modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="Student Attendance System.js"></script>
+</body>
+</html>
